@@ -1,4 +1,4 @@
-name: Log PR Reviewer Template
+name: PR Reviewer for Logs Template
 
 on:
   workflow_call:
