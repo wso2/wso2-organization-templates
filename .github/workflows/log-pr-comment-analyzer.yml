@@ -1,0 +1,50 @@
+name: Log PR Comment Analyzer Template
+
+on:
+  workflow_call:
+    inputs:
+      analyzePrEndpoint:
+        required: true
+        type: string
+      tokenUrl:
+        required: true
+        type: string
+      prUrl:
+        required: true
+        type: string
+    secrets:
+      clientId:
+        required: true
+      clientSecret:
+        required: true
+
+jobs:
+  log-pr-comment-analyzer:
+    runs-on: ubuntu-latest
+    env:
+      ANALYZE_PR_ENDPOINT: ${{ inputs.analyzePrEndpoint }}
+      TOKEN_URL: ${{ inputs.tokenUrl }}
+      CLIENT_ID: ${{ secrets.clientId }}
+      CLIENT_SECRET: ${{ secrets.clientSecret }}
+      PR_URL: ${{ inputs.prUrl }}
+
+    steps:
+      - name: Analyze PR Comments
+        run: |
+          response=$(curl --silent --request POST "$TOKEN_URL" \
+            --header "Content-Type: application/x-www-form-urlencoded" \
+            --data "grant_type=client_credentials&client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET")
+          
+          access_token=$(echo "$response" | jq -r '.access_token')
+
+          if [ "$access_token" == "null" ] || [ -z "$access_token" ]; then
+            echo "Failed to retrieve access token"
+            exit 1
+          fi
+
+          set -e
+          curl --fail --silent --show-error --location "$ANALYZE_PR_ENDPOINT" \
+            --header "Content-Type: application/json" \
+            --header "Authorization: Bearer "$access_token"" \
+            --data "{\"prUrl\": \"$PR_URL\"}"
+          echo "PR review request sent successfully."
