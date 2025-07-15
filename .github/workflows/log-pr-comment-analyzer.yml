@@ -6,6 +6,11 @@ on:
       prUrl:
         required: true
         type: string
+    secrets:
+      clientId:
+        required: true
+      clientSecret:
+        required: true
 
 jobs:
   log-pr-comment-analyzer:
@@ -13,8 +18,8 @@ jobs:
     env:
       ANALYZE_PR_ENDPOINT: ${{ vars.AI_LOG_AGENT_URL }}/analyze-pr-merge
       TOKEN_URL: ${{ vars.AI_LOG_AGENT_TOKEN_URL }}
-      CLIENT_ID: ${{ secrets.AI_LOG_AGENT_CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.AI_LOG_AGENT_CLIENT_SECRET }}
+      CLIENT_ID: ${{ secrets.clientId }}
+      CLIENT_SECRET: ${{ secrets.clientSecret }}
       PR_URL: ${{ inputs.prUrl }}
 
     steps:
@@ -36,4 +41,4 @@ jobs:
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer "$access_token"" \
             --data "{\"prUrl\": \"$PR_URL\"}"
-          echo "PR review request sent successfully."
+          echo "PR merge analyzed successfully."
