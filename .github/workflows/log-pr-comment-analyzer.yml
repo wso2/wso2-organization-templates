@@ -3,29 +3,18 @@ name: Log PR Comment Analyzer Template
 on:
   workflow_call:
     inputs:
-      analyzePrEndpoint:
-        required: true
-        type: string
-      tokenUrl:
-        required: true
-        type: string
       prUrl:
         required: true
         type: string
-    secrets:
-      clientId:
-        required: true
-      clientSecret:
-        required: true
 
 jobs:
   log-pr-comment-analyzer:
     runs-on: ubuntu-latest
     env:
-      ANALYZE_PR_ENDPOINT: ${{ inputs.analyzePrEndpoint }}
-      TOKEN_URL: ${{ inputs.tokenUrl }}
-      CLIENT_ID: ${{ secrets.clientId }}
-      CLIENT_SECRET: ${{ secrets.clientSecret }}
+      ANALYZE_PR_ENDPOINT: ${{ vars.AI_LOG_AGENT_URL }}/analyze-pr-merge
+      TOKEN_URL: ${{ vars.AI_LOG_AGENT_TOKEN_URL }}
+      CLIENT_ID: ${{ secrets.AI_LOG_AGENT_CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.AI_LOG_AGENT_CLIENT_SECRET }}
       PR_URL: ${{ inputs.prUrl }}
 
     steps:

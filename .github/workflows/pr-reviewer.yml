@@ -22,7 +22,7 @@ jobs:
   log-pr-review:
     runs-on: ubuntu-latest
     env:
-      REVIEW_ENDPOINT: ${{ inputs.reviewEndpoint }}
+      REVIEW_ENDPOINT: ${{ vars.AI_LOG_AGENT_URL }}/review-pr
       TOKEN_URL: ${{ inputs.tokenUrl }}
       CLIENT_ID: ${{ secrets.clientId }}
       CLIENT_SECRET: ${{ secrets.clientSecret }}
