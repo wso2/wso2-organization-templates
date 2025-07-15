@@ -1,4 +1,4 @@
-name: PR Reviewer for Logs Template
+name: Log PR Comment Analyzer Template
 
 on:
   workflow_call:
@@ -13,17 +13,17 @@ on:
         required: true
 
 jobs:
-  log-pr-review:
+  log-pr-comment-analyzer:
     runs-on: ubuntu-latest
     env:
-      REVIEW_ENDPOINT: ${{ vars.AI_LOG_AGENT_URL }}/review-pr
+      ANALYZE_PR_ENDPOINT: ${{ vars.AI_LOG_AGENT_URL }}/analyze-pr-merge
       TOKEN_URL: ${{ vars.AI_LOG_AGENT_TOKEN_URL }}
       CLIENT_ID: ${{ secrets.clientId }}
       CLIENT_SECRET: ${{ secrets.clientSecret }}
       PR_URL: ${{ inputs.prUrl }}
 
     steps:
-      - name: Review PR
+      - name: Analyze PR Comments
         run: |
           response=$(curl --silent --request POST "$TOKEN_URL" \
             --header "Content-Type: application/x-www-form-urlencoded" \
@@ -37,8 +37,8 @@ jobs:
           fi
 
           set -e
-          curl --fail --silent --show-error --location "$REVIEW_ENDPOINT" \
+          curl --fail --silent --show-error --location "$ANALYZE_PR_ENDPOINT" \
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer "$access_token"" \
             --data "{\"prUrl\": \"$PR_URL\"}"
-          echo "PR review request sent successfully."
+          echo "PR merge analyzed successfully."
